@@ -1,0 +1,4 @@
+logging.level: #띄어쓰기 없음
+    org.hibernate.SQL: info #띄어쓰기 2칸
+    org.hibernate.orm.jdbc.bind: trace #띄어쓰기 2칸
+    logging.level.org:springframework: DEBUG
