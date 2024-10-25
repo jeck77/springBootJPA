@@ -3,28 +3,28 @@ package jpabook.jpashop.service;
 import jakarta.persistence.EntityManager;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
 
+import static org.junit.Assert.*;
+
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-@TestPropertySource(properties = {"spring.config.location=classpath:application-test.yml"})
-class MemberServiceTest {
+public class MemberServiceTest {
 
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
-    @Autowired EntityManager em;
+    @Autowired
+    EntityManager em;
 
     @Test
-    void 회원가입() {
+    public void 회원가입() throws Exception {
         //given
         Member member = new Member();
         member.setName("kim");
@@ -33,22 +33,23 @@ class MemberServiceTest {
         Long savedId = memberService.join(member);
 
         //then
-        // em.flush();
-        assertEquals(member, memberRepository.findOne(member.getId()));
+        assertEquals(member, memberRepository.findOne(savedId));
     }
 
-    @Test
-    void 중복_회원_제외() {
+    @Test(expected = IllegalStateException.class)
+    public void 중복_회원_예외() throws Exception {
         //given
         Member member1 = new Member();
-        member1.setName("kim1");
+        member1.setName("kim");
+
         Member member2 = new Member();
-        member2.setName("kim2");
+        member2.setName("kim");
+
         //when
         memberService.join(member1);
-        memberService.join(member2);
+        memberService.join(member2); //예외가 발생해야 한다!!!
 
         //then
-        Assertions.assertThrows(IllegalStateException.class, () -> memberService.join(member2));
+        fail("예외가 발생해야 한다.");
     }
 }
