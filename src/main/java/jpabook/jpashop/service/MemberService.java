@@ -1,12 +1,11 @@
 package jpabook.jpashop.service;
 
+import java.util.List;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 // @Transactional(readOnly = true) 조회 성능 최적화
@@ -23,12 +22,13 @@ public class MemberService {
 
     /**
      * 회원가입
+     *
      * @param member
      * @return
      */
     // 가입이기 때문에 따로 Transactional를 붙여줌ㄴ
     @Transactional
-    public Long join(Member member){
+    public Long join(Member member) {
         validateDuplicateMember(member); // 중복 회원 검증
         memberRepository.save(member);
         return member.getId();
@@ -37,18 +37,18 @@ public class MemberService {
     private void validateDuplicateMember(Member member) {
         //EXCEPTION
         List<Member> findMembers = memberRepository.findByName(member.getName());
-        if(!findMembers.isEmpty()){
+        if (!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
 
     // 회원 전체 조회
-    public List<Member> findMembers(){
+    public List<Member> findMembers() {
         return memberRepository.findAll();
     }
 
     // 1건만 조회
-    public Member findOne(Long id){
+    public Member findOne(Long id) {
         return memberRepository.findOne(id);
     }
 }

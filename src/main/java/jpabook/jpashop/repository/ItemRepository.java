@@ -1,11 +1,10 @@
 package jpabook.jpashop.repository;
 
 import jakarta.persistence.EntityManager;
+import java.util.List;
 import jpabook.jpashop.domain.item.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,10 +13,10 @@ public class ItemRepository {
     private final EntityManager em;
 
     public void save(Item item) {
-        if(item.getId() == null) {
+        if (item.getId() == null) {
             // 없으면 생성
             em.persist(item);
-        }else{
+        } else {
             // update와 비슷함
             em.merge(item);
         }
