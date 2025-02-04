@@ -9,6 +9,7 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.query.OrderFlatDto;
 import jpabook.jpashop.repository.query.OrderQueryDto;
 import jpabook.jpashop.repository.query.OrderQueryRepository;
 import lombok.Getter;
@@ -121,6 +122,30 @@ public class OrderApiController {
     @GetMapping("/api/v4/orders")
     public List<OrderQueryDto> orderV4() {
         return orderQueryRepository.findOrderQueryDtos();
+    }
+
+
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> orderV5() {
+        return orderQueryRepository.findAllByDto_optimization();
+    }
+
+    /**
+     * 권장 순서
+     * 1. 엔티티 조회 방식으로 우선 접근
+     * <p>
+     * 1.1. 페치 조인으로 쿼리수 최적화
+     * <p>
+     * 1.2 컬렉션 최적화
+     * 1.2.1. 페이징 필요 hibernate.default_batch_fetch_size` , `@BatchSize`로 최적화
+     * 1.2.2  페이징 필요X -> 페치 조인 사용
+     * <p>
+     * 2. 엔티티 조회 방식으로 해결이 안돠면 DTO 조회 방식 사용
+     * 3. DTO 조회 방식으로 해결이 안되면 NativeSQL or 스프링 JdbcTemplate
+     */
+    @GetMapping("/api/v6/orders")
+    public List<OrderFlatDto> orderV6() {
+        return orderQueryRepository.findAllByDto_flat();
     }
 
     @Getter
